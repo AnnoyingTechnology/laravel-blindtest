@@ -1,0 +1,40 @@
+@import 'bootstrap/scss/bootstrap';
+@import 'animate.css';
+@import '/node_modules/@fortawesome/fontawesome-free/css/fontawesome.css';
+@import '/node_modules/@fortawesome/fontawesome-free/css/solid.css';
+@import "@fontsource/open-sans/300.css"; 
+@import "@fontsource/open-sans/700.css"; 
+
+body {
+	font-family: "Open Sans";
+	font-weight: 300;
+}
+
+h1 {
+	background: -webkit-linear-gradient(180deg, rgba(131,58,180,1) 0%, rgba(253,29,29,1) 50%, rgba(252,176,69,1) 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.gradient-background {
+  background: linear-gradient(260deg,#4459b8,#45006f,#823e4e);
+  background-size: 180% 180%;
+  animation: gradient-animation 10s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+#messages {
+	max-height: calc(100vh - 400px);
+    overflow-y: auto;
+}
