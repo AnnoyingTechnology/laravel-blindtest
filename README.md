@@ -7,17 +7,18 @@
 # Installation
 
 Sequentially 
-* `composer install`
-* `npm install`
+* `composer install` _installs PHP dependencies_
+* `npm install` _installs NodeJS dependencies_
 * Place your music in `storage/app/music` (MP3 files)
-* `php artisan music:scan`
+* `php artisan migrate:fresh` _rebuilds the database_
+* `php artisan music:scan` _scan your music and extracts ID3 tags_
 
 # Running
 
 In parallel 
-* `php artisan serve`
-* `php artisan reverb:start`
-* `npm run dev`
+* `php artisan serve` _runs the local webserver_
+* `php artisan reverb:start` _runs the websocket_
+* `npm run dev` _runs the JS/CSS tools_
 
 # In-game commands 
 
@@ -30,7 +31,7 @@ In parallel
 
 There is no actual authentication. Anyone can choose any username on the login page.
 
-This _should_ not be exposed on the internet, or either 
+This **must** not be exposed on the internet, or either 
 * add an AuthBasic
 * implement password authentication on a fork of this project
 
