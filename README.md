@@ -4,12 +4,19 @@
 
 ![Chatroom](blindtest_chatroom.png)
 
+# Requirements 
+
+* PHP 8.2+
+* a few PHP extensions, nothing exotic
+
 # Installation
 
 Sequentially 
 * `composer install` _installs PHP dependencies_
 * `npm install` _installs NodeJS dependencies_
 * Place your music in `storage/app/music` (MP3 files)
+* `touch database/database.sqlite` _creates an empty database_
+* `mv .env.example .env` _use the default env file_
 * `php artisan migrate:fresh` _rebuilds the database_
 * `php artisan music:scan` _scan your music and extracts ID3 tags_
 
@@ -29,13 +36,15 @@ In parallel
 
 # Security 
 
-There is no actual authentication. Anyone can choose any username on the login page.
+**There is no actual authentication.** 
 
-This **must** not be exposed on the internet, or either 
+Anyone can choose any username on the login page.
+
+This application **must** not be exposed on the internet, otherwise 
 * add an AuthBasic
-* implement password authentication on a fork of this project
+* implement a password authentication on a fork of this project
 
 # Tech
 
 * Uses Websocket for real-time communication
-* Use perfect or partial artist and track title matches for scoring
+* Uses perfect or partial artist and track title matches
