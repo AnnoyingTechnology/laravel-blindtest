@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('file')->unique();
             $table->string('name');
             $table->string('artist');
+            $table->string('remix')->nullable();
             $table->integer('year')->nullable();
             $table->string('genre')->nullable();
 			$table->integer('is_current')->default(0);
 			$table->integer('is_name_found')->default(0); 	// no more name accepted
 			$table->integer('is_artist_found')->default(0); // no more artist accepted
-			$table->integer('is_given_up')->default(0); 	// no more answers accepted
+			$table->integer('is_remix_found')->default(0);// no more remixer accepted
             $table->timestamps();
         });
     }

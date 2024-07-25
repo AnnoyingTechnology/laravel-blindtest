@@ -46,7 +46,7 @@ window.Echo.channel('chatroom')
 		infoContainer.classList.add('justify-content-end');
 		infoContainer.classList.add('mb-2');
 		infoContainer.classList.add('badge');
-		infoContainer.innerText = 'New track !';
+		infoContainer.innerText = 'New track playing';
 		document.getElementById('messages').appendChild(infoContainer);
 
 		$('#audioplayer').attr('src', e.url);
@@ -83,7 +83,7 @@ window.Echo.channel('chatroom')
 		infoContainer.classList.add('justify-content-end');
 		infoContainer.classList.add('mb-2');
 		infoContainer.classList.add('badge');
-		infoContainer.innerText = 'Scores have been reset.';
+		infoContainer.innerText = 'Scores have been reset';
 		document.getElementById('messages').appendChild(infoContainer);
 
 		$('#messages').scrollTop($('#messages')[0].scrollHeight);
@@ -100,7 +100,7 @@ window.Echo.channel('chatroom')
 		insultMessage.classList.add('mb-2');
 		insultMessage.classList.add('me-2');
 		insultMessage.classList.add('badge');
-		insultMessage.classList.add('text-bg-info');
+		insultMessage.classList.add('text-light');
 		insultMessage.innerText = e.insult;
 
 		const infoMessage = document.createElement('span');
@@ -108,7 +108,7 @@ window.Echo.channel('chatroom')
 		infoMessage.classList.add('mb-2');
 		infoMessage.classList.add('me-2');
 		infoMessage.classList.add('badge');
-		infoMessage.classList.add('text-bg-info');
+		infoMessage.classList.add('text-info');
 		infoMessage.classList.add('animate__animated');
 		infoMessage.classList.add('animate__headShake');
 
@@ -149,7 +149,7 @@ window.Echo.channel('chatroom')
 			infoMessage.classList.add('mb-2');
 			infoMessage.classList.add('me-2');
 			infoMessage.classList.add('badge');
-			infoMessage.classList.add('text-bg-light');
+			infoMessage.classList.add('text-warning');
 
 			infoMessage.innerText = username + '\'s score is '+score;
 

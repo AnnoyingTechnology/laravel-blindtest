@@ -78,6 +78,7 @@ class ChatController extends Controller
 			// mark all as found to prevent cheating afterwards
 			$track->is_name_found = 1;
 			$track->is_artist_found = 1;
+			$track->is_remix_found = 1;
 			$track->save();
 			// broadcast the giveup event
 			TrackGiveup::dispatch($track);

@@ -18,7 +18,9 @@ Sequentially
 * `touch database/database.sqlite` _creates an empty database_
 * `mv .env.example .env` _use the default env file_
 * `php artisan migrate:fresh` _rebuilds the database_
-* `php artisan music:scan` _scan your music and extracts ID3 tags_
+* `php artisan reverb:install` _regenerates reverb keys and config (Answer Yes)_ 
+* `php artisan music:scan` _scans your music, extracts ID3 tags and inserts in the database_
+* `php artisan key:generate` _generates a crypto key_
 
 # Running
 

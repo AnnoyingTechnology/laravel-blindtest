@@ -19,6 +19,9 @@ class ScoreIncrease implements ShouldBroadcastNow
 
 		$this->scores = User::pluck('score', 'username')->toArray();
 
+        // sort by score
+        arsort($this->scores);
+
     }
     /**
      * Get the channels the event should broadcast on.

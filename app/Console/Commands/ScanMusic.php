@@ -51,10 +51,24 @@ class ScanMusic extends Command
             $year   = $fileInfo['tags']['id3v2']['year'][0] ?? null;
             $genre  = $fileInfo['tags']['id3v2']['genre'][0] ?? null;
 
+            // if the name contains a remix
+            if(str_contains($name, '(')) {
+                // isolate the name from the fullname
+                list($name, $remix) = explode('(', $name);
+                // trim the name 
+                $name = trim($name);
+                // trim the remixer
+                $remix = trim($remix, ' )');
+            }
+            else {
+                $remix = null;
+            }
+
             // Add track data to the database
             DB::table('tracks')->insert([
                 'file' => basename($filePath),
                 'name' => $name,
+                'remix' => $remix,
                 'artist' => $artist,
                 'year' => $year,
                 'genre' => $genre,

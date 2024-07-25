@@ -11,10 +11,16 @@ class Track extends Model
 {
     use HasFactory;
 
+	// column where we search for a match
+	const scorable_columns = ['name', 'artist', 'remix'];
+	// minimum soft score match to close answers for that column
+	const minimum_soft_score = 0.33;
+
 	protected $fillable = [
 		'is_current',
 		'is_name_found',
-		'is_artist_found'
+		'is_artist_found',
+		'is_remix_found'
 	];
 
 	public function getUrl() :string {
@@ -29,10 +35,11 @@ class Track extends Model
 		Track::where('is_current', '=', 1)->update([
 			'is_current'		=>0,
 			'is_name_found'		=>0,
-			'is_artist_found'	=>0
+			'is_artist_found'	=>0,
+			'is_remix_found'	=>0
 		]);
 
-		// mark this track as active
+		// mark this track the active one
 		$this->is_current = 1;
 		$this->save();
 
@@ -69,125 +76,86 @@ class Track extends Model
 		// slugify for softer comparisons
 		$answerSlug = Str::slug($answer);
 
-		// perfect name match
-        if(
-			$answerSlug === Str::slug($this->name) && 
-			!$this->is_name_found
-		) {
+		// iterate through the scorable columns
+		foreach (self::scorable_columns as $column) {
 			
-			$this->is_name_found = 1;
-			$this->save();
+			$columnSlug = Str::slug($this->$column);
+			$is_already_found_column = "is_{$column}_found";
 
-			// increase the user's score
-			Auth::user()
-				->increaseScoreBy(1)
-				->save();
+			// Check if the answer matches the column and the flag is not set
+			if (
+				$answerSlug === $columnSlug && 
+				!$this->$is_already_found_column)
+			{
+				$this->$is_already_found_column = 1;
+				$this->save();
 
-			// return what has been found
-            return [
-				'found'		=>'name',
-				'score'		=>1,
-			];
-        }
+				// Increase the user's score
+				Auth::user()->increaseScoreBy(1)->save();
 
-		// perfect artist match
-		if(
-			$answerSlug === Str::slug($this->artist) && 
-			!$this->is_artist_found
-		) {
-			
-			$this->is_artist_found = 1;
-			$this->save();
+				// Return what has been found
+				return [
+					'found' => $column,
+					'score' => 1,
+				];
+			}
+		}
 
-			// increase the user's score
-			Auth::user()
-				->increaseScoreBy(1)
-				->save();
-
-			// return what has been found
-            return [
-				'found'		=>'artist',
-				'score'		=>1,
-			];
-        }
 
 		// partial matches
         $answerWords = explode('-', $answerSlug);
 
-		// soft comparison with name
-        $nameWords = explode('-', Str::slug($this->name));
-        $totalWords = count($nameWords);
-        $nameScore = 0;
+		// for each of the scorable columns
+		foreach (self::scorable_columns as $column) {
 
-		// look for each provided words
-        foreach ($answerWords as $index => $word) {
-            $nameIndex = array_search($word, $nameWords);
-            if ($nameIndex !== false) {
-                if ($nameIndex === $index) {
-                    $nameScore += 1 / $totalWords;
-                } else {
-                    $nameScore += 0.5 / $totalWords;
-                }
-            }
-        }
-
-		if($nameScore >= 0.25 && !$this->is_name_found) {
-
-			$nameScore = round($nameScore, 1);
-
-			if($nameScore > 0.33) {
-			
-				$this->is_name_found = 1;
-				$this->save();
-
-			}
-			
-			Auth::user()
-				->increaseScoreBy($nameScore)
-				->save();
-
-			return [
-				'found'		=>'name',
-				'score'		=>$nameScore,
-			];
-		}
-
-		// soft comparison with name
-        $artistWords = explode('-', Str::slug($this->artist));
-        $totalWords = count($nameWords);
-        $artistScore = 0;
-
-		// look for each provided words
-        foreach ($answerWords as $index => $word) {
-            $artistIndex = array_search($word, $artistWords);
-            if ($artistIndex !== false) {
-                if ($artistIndex === $index) {
-                    $artistScore += 1 / $totalWords;
-                } else {
-                    $artistScore += 0.5 / $totalWords;
-                }
-            }
-        }
-
-		if($artistScore >= 0.25 && !$this->is_artist_found) {
-
-			$artistScore = round($artistScore, 1);
-
-			if($artistScore > 0.33) {
-
-				$this->is_artist_found = 1;
-				$this->save();
-
+			if(
+				// we have nothing to compare against 
+				!$this->$column || 
+				// or if this has already been found by someone
+				$this->{"is_{$column}_found"}
+			) { 
+				// don't attempt a match
+				continue; 
 			}
 
-			Auth::user()
-				->increaseScoreBy($artistScore)
-				->save();
+			// soft comparison with the current column
+			$columnWords = explode('-', Str::slug($this->$column));
+			$totalWords = count($columnWords);
+			$columnScore = 0;
 
-			return [
-				'found'		=>'name',
-				'score'		=>$artistScore,
-			];
+			// look for each provided word
+			foreach ($answerWords as $index => $word) {
+				$wordIndex = array_search($word, $columnWords);
+				// if the word exists in the track name/remix/artist
+				if ($wordIndex !== false) {
+					// if the word is at the right place
+					if ($wordIndex === $index) {
+						$columnScore += 1 / $totalWords;
+					} 
+					// word exists but not at the right place
+					else {
+						$columnScore += 0.5 / $totalWords;
+					}
+				}
+			}
+
+			// if we reached a high enough score
+			// meaning 1/3 words, at the proper place
+			// or 2/3 words out of place
+			if ($columnScore >= self::minimum_soft_score) {
+
+				$columnScore = round($columnScore, 1);
+
+				$this->{"is_{$column}_found"} = 1;
+				$this->save();
+
+				Auth::user()->increaseScoreBy($columnScore)->save();
+
+				return [
+					'found' => $column,
+					'score' => $columnScore,
+				];
+			}
 		}
 
 		return false;
