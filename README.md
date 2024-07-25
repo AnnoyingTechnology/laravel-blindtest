@@ -48,3 +48,9 @@ This application **must** not be exposed on the internet, otherwise
 
 * Uses Websocket for real-time communication
 * Uses perfect or partial artist and track title matches
+
+# Disclaimer
+
+I wrote this in about 7h, being new to Laravel. 
+
+This is first and foremost something to play with a few friends. Don't expect premium code quality (even average code quality tbh).
