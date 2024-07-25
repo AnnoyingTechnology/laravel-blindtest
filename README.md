@@ -1,3 +1,9 @@
+# Screenshots
+
+![Login Page](blindtest_login.png)
+
+![Chatroom](blindtest_chatroom.png)
+
 # Installation
 
 Sequentially 
@@ -27,3 +33,8 @@ There is no actual authentication. Anyone can choose any username on the login p
 This _should_ not be exposed on the internet, or either 
 * add an AuthBasic
 * implement password authentication on a fork of this project
+
+# Tech
+
+* Uses Websocket for real-time communication
+* Use perfect or partial artist and track title matches for scoring
