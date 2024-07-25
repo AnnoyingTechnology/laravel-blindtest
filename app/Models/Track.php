@@ -45,16 +45,38 @@ class Track extends Model
 
 	}
 
-	public static function setAndGetRandom(?string $genre = null) :self {
+	public static function setAndGetRandom(?array $filters = []) :self {
 	
 		// fetch a random track from the database
 		$query = Track::query();
 
-		if($genre) {
-			$query->where('genre', 'like', '%' . $genre . '%');
+		// for each provided filters (if any)
+		foreach($filters as $filter) {
+			// if it looks like a year
+			if(is_numeric($filter) && strlen($filter) == 4) {
+				// filter to that decade
+				$query->whereBetween(
+					'year', [
+						substr($filter, 0, 2) . '0', 
+						substr($filter, 0, 3) . '9'
+					]
+				);
+			}
+			// otherwise consider that it's a genre
+			else {
+				$query->where('genre', 'like', '%' . $filter . '%');
+			}
+
 		}
 
+		// fetch a random track
 		$track = $query->inRandomOrder()->first();
+
+		// if we failed to find a matching track
+		if(!$track) {
+			// get a really random one (no filters)
+			$track = Track::query()->inRandomOrder()->first();
+		}
 
 		// mark that track as the is_current
 		$track->setAsCurrent();

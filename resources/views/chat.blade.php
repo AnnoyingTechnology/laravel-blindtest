@@ -18,7 +18,7 @@
                     </h1>
                     
                     <div class="rounded bg-dark text-light p-3 float-end">
-                        <span class="badge text-bg-success">/next [genre]</span> pulls a new random track<br />
+                        <span class="badge text-bg-success">/next [genre|year]</span> pulls a new random track<br />
                         <span class="badge text-bg-primary">/ff</span> fast forwards in the track<br />
                         <span class="badge text-bg-info">/giveup</span> shows track info<br />
                         <span class="badge text-bg-warning">/reset</span> resets the scores<br />
@@ -44,7 +44,7 @@
                         placeholder="Type the track title, remixer, artist, a command or just chat" 
                         autofocus>
                     </div>
-                    
+
                 </div>
             </div>
         </div>

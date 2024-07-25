@@ -45,22 +45,24 @@ class ChatController extends Controller
         MessageSent::dispatch($message, $username, $uuid);
 
 		// if the message ask for the next track
-		if($message == '/next') {
+		// if($message == '/next') {
 
-			// set and retrieve a random new track
-			$track = Track::setAndGetRandom();
+		// 	// set and retrieve a random new track
+		// 	$track = Track::setAndGetRandom();
 
-			NewTrack::dispatch($track);
-		}
-		elseif(str_starts_with($message, '/next ')) {
+		// 	NewTrack::dispatch($track);
+		// }
+
+		// if the message ask for the next track
+		if(str_starts_with($message, '/next')) {
 
 			// set and retrieve a random new track of the proper genre
 			$track = Track::setAndGetRandom(
-				str_replace(
-					'/next ',
-					'',
-					$message
-				)
+				// extract parameters
+				collect(explode(' ', $message))
+					->skip(1)
+					->values()
+					->all()
 			);
 
 			NewTrack::dispatch($track);

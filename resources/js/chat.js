@@ -112,7 +112,7 @@ window.Echo.channel('chatroom')
 		infoMessage.classList.add('animate__animated');
 		infoMessage.classList.add('animate__headShake');
 
-		infoMessage.innerText = 'Track was '+e.name+' by '+e.artist+'.';
+		infoMessage.innerText = e.name+' by '+e.artist;
 
 		infoContainer.appendChild(insultMessage);
 		infoContainer.appendChild(infoMessage);
