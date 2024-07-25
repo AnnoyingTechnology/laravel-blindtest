@@ -1,0 +1,5 @@
+node_modules/*
+vendor/*
+storage/app/music/*
+composer.lock
+package-lock.json
