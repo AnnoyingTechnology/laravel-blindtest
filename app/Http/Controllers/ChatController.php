@@ -38,20 +38,12 @@ class ChatController extends Controller
     public function store(Request $request)
     {
 		// get the contents
+		$request->validate(['message' => 'required|string']);
         $message 	= $request->input('message');
 		$username 	= Auth::user()->username;
 		$uuid 		= Str::uuid();
 		// dispatch it to all watchers
         MessageSent::dispatch($message, $username, $uuid);
-
-		// if the message ask for the next track
-		// if($message == '/next') {
-
-		// 	// set and retrieve a random new track
-		// 	$track = Track::setAndGetRandom();
-
-		// 	NewTrack::dispatch($track);
-		// }
 
 		// if the message ask for the next track
 		if(str_starts_with($message, '/next')) {
