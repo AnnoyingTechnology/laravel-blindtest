@@ -64,19 +64,30 @@ class ScanMusic extends Command
                 $remix = null;
             }
 
-            // Add track data to the database
-            DB::table('tracks')->insert([
-                'file' => basename($filePath),
-                'name' => $name,
-                'remix' => $remix,
-                'artist' => $artist,
-                'year' => $year,
-                'genre' => $genre,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+			try {
 
-            $this->info("Added: {$filePath}");
+				// Add track data to the database
+				DB::table('tracks')->insert([
+					'file' => basename($filePath),
+					'name' => $name,
+					'remix' => $remix,
+					'artist' => $artist,
+					'year' => $year,
+					'genre' => $genre,
+					'created_at' => now(),
+					'updated_at' => now(),
+				]);
+
+				$this->info("Added: {$filePath}");
+
+			}
+			catch(\Illuminate\Database\QueryException $e) {
+			
+				$this->error("Error: {$filePath}");
+
+			}
+
+            
         }
 
         $this->info('Music scan completed and database updated.');
