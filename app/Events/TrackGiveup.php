@@ -12,6 +12,7 @@ class TrackGiveup implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 	public $name;
 	public $artist;
+	public $remix;
 	public $insult;
 	const insults = [
 		"You wankers",
@@ -84,6 +85,7 @@ class TrackGiveup implements ShouldBroadcastNow
     {
         $this->name = $track->name;
 		$this->artist = $track->artist;
+		$this->remix = $track->remix;
 		$this->insult = Arr::random(self::insults);
     }
     /**

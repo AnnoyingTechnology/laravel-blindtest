@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Track;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ChatController extends Controller
@@ -37,11 +38,13 @@ class ChatController extends Controller
 	// we received a new message
     public function store(Request $request)
     {
+
 		// get the contents
 		$request->validate(['message' => 'required|string']);
         $message 	= $request->input('message');
 		$username 	= Auth::user()->username;
 		$uuid 		= Str::uuid();
+
 		// dispatch it to all watchers
         MessageSent::dispatch($message, $username, $uuid);
 
