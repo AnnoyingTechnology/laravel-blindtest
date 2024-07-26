@@ -3,3 +3,4 @@ vendor/*
 storage/app/music/*
 composer.lock
 package-lock.json
+public/build/*
