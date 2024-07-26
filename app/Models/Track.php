@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 class Track extends Model
 {
@@ -25,7 +26,8 @@ class Track extends Model
 
 	public function getUrl() :string {
 	
-		return route('track', ['id'=>$this->id]);
+		//return route('track', ['id'=>$this->id]);
+		return URL::signedRoute('track', ['id'=>$this->id]);
 
 	}
 
