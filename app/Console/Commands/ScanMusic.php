@@ -59,6 +59,26 @@ class ScanMusic extends Command
                 $name = trim($name);
                 // trim the remixer
                 $remix = trim($remix, ' )');
+                // remove banalities from the remix
+                $remix = str_ireplace(
+                    [
+                        'Original Mix',
+                        'Extended',
+                        'Radio Edit',
+                        'Re-Edit',
+                        'Edit',
+                        'Remix',
+                        'Radio',
+                        'Short',
+                        'Mix',
+                        'Dub',
+                        'Instrumental'
+                    ],
+                    '', 
+                    $remix
+                );
+                // re-remove trailing spaces
+                $remix = trim($remix) ?? null;
             }
             else {
                 $remix = null;
