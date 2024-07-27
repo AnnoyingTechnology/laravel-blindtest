@@ -4,3 +4,7 @@ storage/app/music/*
 composer.lock
 package-lock.json
 public/build/*
+storage/debugbar
+.env.prod
+.env
+push-to-prod.sh
