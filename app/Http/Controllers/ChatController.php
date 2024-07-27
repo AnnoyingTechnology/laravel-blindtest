@@ -43,10 +43,11 @@ class ChatController extends Controller
 		$request->validate(['message' => 'required|string']);
         $message 	= $request->input('message');
 		$username 	= Auth::user()->username;
+		$color		= Auth::user()->color;
 		$uuid 		= Str::uuid();
 
 		// dispatch it to all watchers
-        MessageSent::dispatch($message, $username, $uuid);
+        MessageSent::dispatch($message, $username, $uuid, $color);
 
 		// if the message ask for the next track
 		if(str_starts_with($message, '/next')) {

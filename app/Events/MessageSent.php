@@ -8,22 +8,16 @@ use Illuminate\Queue\SerializesModels;
 class MessageSent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $message;
-	public $username;
-	public $uuid;
+
     /**
      * Create a new event instance.
      */
     public function __construct(
-		$message, 
-		$username,
-		$uuid
-	)
-    {
-        $this->message = $message;
-		$this->username = $username;
-		$this->uuid = $uuid;
-    }
+		public string $message, 
+		public string $username,
+		public string $uuid,
+        public string $color
+	) {}
     /**
      * Get the channels the event should broadcast on.
      *

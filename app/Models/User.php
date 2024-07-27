@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use \Colors\RandomColor;
 
 class User extends Authenticatable
 {
@@ -21,6 +22,19 @@ class User extends Authenticatable
         'username',
 		'score',
     ];
+
+    protected static function boot() {
+        parent::boot();
+
+        static::saving(function ($model) {
+            if (!$model->color) {
+                $model->color = RandomColor::one([
+                    'luminosity'    => 'light',
+                    'format'        => 'hex'
+                 ]);
+            }
+        });
+    }
 
 	public static function resetScores() :void {
 	
