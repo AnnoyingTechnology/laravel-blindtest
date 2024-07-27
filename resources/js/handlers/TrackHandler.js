@@ -23,6 +23,13 @@ export class TrackHandler {
         DOMHelper.scrollToBottom();
     }
 
+    handleClues(e) {
+        console.log(e);
+        const cluesElement = this.createCluesElement(e);
+        DOMHelper.appendToMessages(cluesElement);
+        DOMHelper.scrollToBottom();
+    }
+
     handleTrackFound(e) {
         console.log(e);
         this.updateTrackFoundUI(e);
@@ -52,6 +59,22 @@ export class TrackHandler {
 		const infoElement = DOMHelper.createElement('span', ['mb-2', 'me-2', 'badge', 'text-info', 'animate__animated', 'animate__headShake'], null, infoText);
 		
 		container.appendChild(insultElement);
+		container.appendChild(infoElement);
+		return container;
+    }
+
+    createCluesElement(e) {
+        const container = DOMHelper.createElement('div', ['d-flex', 'justify-content-end']);
+
+		let infoText;
+		if (e.remix) {
+			infoText = `${e.name} (${e.remix}) by ${e.artist}`;
+		} else {
+			infoText = `${e.name} by ${e.artist}`;
+		}
+
+		const infoElement = DOMHelper.createElement('span', ['mb-2', 'me-2', 'badge', 'text-secondary', 'animate__animated', 'animate__headShake'], null, infoText);
+		
 		container.appendChild(infoElement);
 		return container;
     }

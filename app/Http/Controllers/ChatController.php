@@ -1,15 +1,20 @@
 <?php
 namespace App\Http\Controllers;
-use App\Events\MessageSent;
-use App\Events\NewTrack;
-use App\Events\FoundTrack;
-use App\Events\TrackGiveup;
-use App\Events\FastForwardTrack;
-use App\Events\UserJoined;
-use App\Events\ResetScores;
-use App\Events\ScoreIncrease;
-use App\Models\User;
-use App\Models\Track;
+// events
+use App\Events\{ 
+	MessageSent, 		// rename -> UserMessage
+	UserJoined,
+	NewTrack, 			// rename -> TrackNew
+	FoundTrack, 		// rename -> TrackFound
+	TrackGiveup, 
+	TrackClues,
+	FastForwardTrack, 	// rename -> TrackFastForward
+	ResetScores, 		// rename -> ScoresReset
+	ScoreIncrease, 		// rename -> ScoresIncrease
+};
+// models
+use App\Models\{ User, Track };
+// framework
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -46,7 +51,7 @@ class ChatController extends Controller
 		$color		= Auth::user()->color;
 		$uuid 		= Str::uuid();
 
-		// dispatch it to all watchers
+		// dispatch the message to all watchers
         MessageSent::dispatch($message, $username, $uuid, $color);
 
 		// if the message ask for the next track
@@ -60,24 +65,33 @@ class ChatController extends Controller
 					->values()
 					->all()
 			);
-
+			// dispatch a newtrack event
 			NewTrack::dispatch($track);
 
 		}
 		// fast forward in the current track by x seconds
 		elseif($message == '/ff') {
+			// dispatch a fast forward event
 			FastForwardTrack::dispatch();
+		}
+		// give a clue
+		elseif($message == '/clue') {
+
+			// retrieve the current track
+			$track = Track::getCurrent();
+			// get the clues
+			$clues = $track->getClues();
+			// dispatch the clue event
+			TrackClues::dispatch(...$clues);
+
 		}
 		// give up and displays the track info
 		elseif($message == '/giveup') {
-		
+
 			// retrive the current track
 			$track = Track::getCurrent();
 			// mark all as found to prevent cheating afterwards
-			$track->is_name_found = 1;
-			$track->is_artist_found = 1;
-			$track->is_remix_found = 1;
-			$track->save();
+			$track->giveup()->save();
 			// broadcast the giveup event
 			TrackGiveup::dispatch($track);
 
@@ -99,6 +113,7 @@ class ChatController extends Controller
 				->match($message);
 		
 			if($matches) {
+
 				// broadcast a found event
 				FoundTrack::dispatch(
 					$username,
@@ -113,7 +128,11 @@ class ChatController extends Controller
 
 		}
 
-        return response()->json(['success' => true, 'message' => 'Message sent successfully']);
+        return response()
+			->json([
+				'success' => true, 
+				'message' => 'Message sent successfully'
+			]);
     }
 
 

@@ -22,6 +22,7 @@
                         <span class="badge text-bg-primary">/ff</span> fast forwards in the track<br />
                         <span class="badge text-bg-info">/giveup</span> shows track info<br />
                         <span class="badge text-bg-warning">/reset</span> resets the scores<br />
+                        <span class="badge text-bg-light">/clue</span> discloses random letters<br />
                     </div>
 
                     <p class="lead float-start pt-3 ps-2">

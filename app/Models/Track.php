@@ -93,6 +93,64 @@ class Track extends Model
 
 	}
 
+	public function getClues() :array {
+
+		$clues = [];
+
+		// get cluyfied name, remix, artist
+		foreach(self::scorable_columns as $column) {
+
+			// ignore empty columns (remix only)
+			if(!$this->$column || !strlen($this->$column)) { continue; }
+
+			$input = $this->$column;
+
+			\Illuminate\Support\Facades\Log::debug($this->$column);
+			$length = Str::length($input);
+
+			// Ensure at least one character is visible for strings less than 5 characters
+			$visibleCount = ($length < 5) ? 1 : max(1, ceil($length * 0.2));
+
+			// Get positions to keep visible
+			if ($length < 5) {
+				// If the length is less than 5, show one character
+				$visibleIndexes = array_rand(array_flip(range(0, $length - 1)));
+				$visibleIndexes = [$visibleIndexes]; // array_rand returns a single number if num is 1
+			} else {
+				$visibleIndexes = array_rand(array_flip(range(0, $length - 1)), $visibleCount);
+			}
+			
+			// Normalize the result to an array
+			if (!is_array($visibleIndexes)) {
+				$visibleIndexes = [$visibleIndexes];
+			}
+			$visibleIndexes = array_flip($visibleIndexes);
+		
+			// Build the obscured string
+			$clues[] = collect(str_split($input))
+				->map(function ($char, $index) use ($visibleIndexes) {
+					return $char === ' ' || isset($visibleIndexes[$index]) ? $char : '*';
+				})
+				->implode('');
+
+		}
+
+		// decrease the maximum score reachable
+
+		// return the clues
+		return $clues;
+	}
+
+	public function giveup() :self {
+
+		$this->is_name_found = 1;
+		$this->is_artist_found = 1;
+		$this->is_remix_found = 1;
+
+		return $this;
+
+	}
+
 	public function match(
 		string $answer
 	) :array|false {
