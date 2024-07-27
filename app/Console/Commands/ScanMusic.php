@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Track;
 use getID3;
 
 class ScanMusic extends Command
@@ -111,6 +112,9 @@ class ScanMusic extends Command
         }
 
         $this->info('Music scan completed and database updated.');
+
+        // set a random track by default
+        Track::setAndGetRandom();
 
         return 0;
     }
