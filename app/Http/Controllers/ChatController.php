@@ -41,7 +41,7 @@ class ChatController extends Controller
 	}
 
 	// we received a new message
-    public function store(Request $request)
+    public function sendMessage(Request $request)
     {
 
 		// get the contents
@@ -54,86 +54,137 @@ class ChatController extends Controller
 		// dispatch the message to all watchers
         MessageSent::dispatch($message, $username, $uuid, $color);
 
-		// if the message ask for the next track
+		// if we have a next instructions
 		if(str_starts_with($message, '/next')) {
-
-			// set and retrieve a random new track of the proper genre
-			$track = Track::setAndGetRandom(
-				// extract parameters
-				collect(explode(' ', $message))
-					->skip(1)
-					->values()
-					->all()
-			);
-			// dispatch a newtrack event
-			NewTrack::dispatch($track);
-
+			$this->next($message);
+		} else {
+			match ($message) {
+				'/ff' 		=> $this->fastforward(),
+				'/clue' 	=> $this->clue(),
+				'/giveup' 	=> $this->giveup(),
+				'/reset' 	=> $this->reset(),
+				default 	=> mb_strlen($message) >= 3 ? 
+					$this->match($message, $username, $uuid) : 
+					null,
+			};
 		}
-		// fast forward in the current track by x seconds
-		elseif($message == '/ff') {
-			// dispatch a fast forward event
-			FastForwardTrack::dispatch();
-		}
-		// give a clue
-		elseif($message == '/clue') {
+		// // if the message ask for the next track
+		// if(str_starts_with($message, '/next')) {
 
-			// retrieve the current track
-			$track = Track::getCurrent();
-			// get the clues
-			$clues = $track->getClues();
-			// dispatch the clue event
-			TrackClues::dispatch(...$clues);
+		// 	$this->next($message);
 
-		}
-		// give up and displays the track info
-		elseif($message == '/giveup') {
+		// }
+		// // fast forward in the current track by x seconds
+		// elseif($message == '/ff') {
+			
+		// 	$this->fastforward();
 
-			// retrive the current track
-			$track = Track::getCurrent();
-			// mark all as found to prevent cheating afterwards
-			$track->giveup()->save();
-			// broadcast the giveup event
-			TrackGiveup::dispatch($track);
+		// }
+		// // give a clue
+		// elseif($message == '/clue') {
 
-		}
-		// resets the scoreboard
-		elseif($message == '/reset') {
+		// 	$this->clue();
+
+		// }
+		// // give up and displays the track info
+		// elseif($message == '/giveup') {
+
+		// 	$this->giveup();
+
+		// }
+		// // resets the scoreboard
+		// elseif($message == '/reset') {
 		
-			// reset users scores
-			User::resetScores();
-			// broadcast the event
-			ResetScores::dispatch();
+		// 	$this->reset();
 
-		}
-		elseif(mb_strlen($message) >= 3) {
+		// }
+		// elseif(mb_strlen($message) >= 3) {
 		
-			// get the current track
-			$matches = Track::getCurrent()
-				// attempt to match it with an answer
-				->match($message);
-		
-			if($matches) {
+		// 	$this->match($message, $username, $uuid);
 
-				// broadcast a found event
-				FoundTrack::dispatch(
-					$username,
-					$matches['found'],
-					$matches['score'],
-					$uuid
-				);
+		// }
 
-				// broadcast a score increase event
-				ScoreIncrease::dispatch();
-			}
-
-		}
-
-        return response()
-			->json([
-				'success' => true, 
-				'message' => 'Message sent successfully'
-			]);
+        return response()->json(['success' => true]);
     }
 
+	private function clue() :void {
+
+		// retrieve the current track
+		$track = Track::getCurrent();
+		// get the clues
+		$clues = $track->getClues();
+		// dispatch the clue event
+		TrackClues::dispatch(...$clues);
+
+	}
+
+	private function giveup() :void {
+
+		// retrive the current track
+		$track = Track::getCurrent();
+		// mark all as found to prevent cheating afterwards
+		$track->giveup()->save();
+		// broadcast the giveup event
+		TrackGiveup::dispatch($track);
+		
+	}
+
+	private function match(
+		string $message, 
+		string $username, 
+		string $uuid
+	) :void {
+
+		// get the current track
+		$matches = Track::getCurrent()
+			// attempt to match it with an answer
+			->match($message);
+
+		if($matches) {
+
+			// broadcast a found event
+			FoundTrack::dispatch(
+				$username,
+				$matches['found'],
+				$matches['score'],
+				$uuid
+			);
+
+			// broadcast a score increase event
+			ScoreIncrease::dispatch();
+		}
+
+	}
+
+	private function reset() :void {
+
+		// reset users scores
+		User::resetScores();
+		// broadcast the event
+		ResetScores::dispatch();
+
+	}
+
+	private function fastforward() :void {
+
+		// dispatch a fast forward event
+		FastForwardTrack::dispatch();
+
+	}
+
+	private function next(string $message) :void {
+
+		// set and retrieve a random new track of the proper genre
+		$track = Track::setAndGetRandom(
+			// extract parameters
+			collect(explode(' ', $message))
+				->skip(1)
+				->values()
+				->all()
+		);
+		// dispatch a newtrack event
+		NewTrack::dispatch($track);
+
+	}
 
 }

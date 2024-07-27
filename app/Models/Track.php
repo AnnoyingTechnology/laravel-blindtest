@@ -21,7 +21,8 @@ class Track extends Model
 		'is_current',
 		'is_name_found',
 		'is_artist_found',
-		'is_remix_found'
+		'is_remix_found',
+		'scoring_factor'
 	];
 
 	public function getUrl() :string {
@@ -38,7 +39,8 @@ class Track extends Model
 			'is_current'		=>0,
 			'is_name_found'		=>0,
 			'is_artist_found'	=>0,
-			'is_remix_found'	=>0
+			'is_remix_found'	=>0,
+			'scoring_factor'	=>1
 		]);
 
 		// mark this track the active one
@@ -136,6 +138,12 @@ class Track extends Model
 		}
 
 		// decrease the maximum score reachable
+		$this->decrement(
+			'scoring_factor', 
+			$this->scoring_factor >= 0.25 ? 
+				0.25 : 
+				0
+		);
 
 		// return the clues
 		return $clues;
@@ -161,24 +169,26 @@ class Track extends Model
 		// iterate through the scorable columns
 		foreach (self::scorable_columns as $column) {
 			
+			$score = 1 * $this->scoring_factor;
+
 			$columnSlug = Str::slug($this->$column);
 			$is_already_found_column = "is_{$column}_found";
 
 			// Check if the answer matches the column and the flag is not set
 			if (
 				$answerSlug === $columnSlug && 
-				!$this->$is_already_found_column)
-			{
-				$this->$is_already_found_column = 1;
+				!$this->$is_already_found_column
+			) {
+				$this->$is_already_found_column = $score;
 				$this->save();
 
 				// Increase the user's score
-				Auth::user()->increaseScoreBy(1)->save();
+				Auth::user()->increaseScoreBy($score)->save();
 
 				// Return what has been found
 				return [
 					'found' => $column,
-					'score' => 1,
+					'score' => $score,
 				];
 			}
 		}
@@ -225,6 +235,9 @@ class Track extends Model
 			// meaning 1/3 words, at the proper place
 			// or 2/3 words out of place
 			if ($columnScore >= self::minimum_soft_score) {
+
+				// apply scoring factor
+				$columnScore *= $this->scoring_factor;
 
 				$columnScore = round($columnScore, 1);
 

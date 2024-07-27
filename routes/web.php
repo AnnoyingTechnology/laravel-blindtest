@@ -22,7 +22,7 @@ Route::get('/chat', function () {
     ->middleware('auth');
 
 // action of sending a message
-Route::post('/chat/send-message', [ChatController::class, 'store'])
+Route::post('/chat/send-message', [ChatController::class, 'sendMessage'])
     ->name('chat.send')
     ->middleware('auth')
     ->middleware(['throttle:45,1,10,1']);
