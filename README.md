@@ -31,10 +31,35 @@ In parallel
 
 # In-game commands 
 
-* `/next [genre]` pulls a new random track
+* `/next [genre|year] [genre|year]` pulls a new random track
 * `/ff` fast forwards in the track
 * `/giveup` shows track info. No further answers will be accepted for that track.
 * `/reset` resets the scores. All Users will have their score set to zero.
+* `/clue` shows 20% of the letters of artist, name, remix and lessen the scorable points by -20%. Can be called multiple times.
+
+Note that the genre/year is not saved. 
+
+Consider the following sequence : 
+* call `/next 2000 house`
+* The next track will be of genre containing House in decade 2000-2009
+* call `/next`
+* The next track will be totally random
+
+# Scoring
+
+Matching is not case sensitive.
+
+Finding an exact match for name, remix (if any) or artist of a track gives 1 point each (maximum score of +3 by track).
+
+Consider the track name `Two Months Off`. The track name has 3 words so each word is worth at most 0.33. 
+
+* Each word at the right place gives a third of a point. 
+* Each word at the wrong place gives a third of a point, divided by two.
+
+* Answering `two month off` would give 1 point.
+* Answering `three months off` would give 2 out of 3 words at the right place : `0.33+0.33 = 0.66` points rounded to 0.7
+* Answering `off two months` would give 3 out of 3 words, but none at the right place = `0.33/2+0.33/2+0.33/2` = 0.5 points
+
 
 # Security 
 
