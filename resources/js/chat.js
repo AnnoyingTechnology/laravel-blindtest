@@ -37,7 +37,7 @@ class ChatApplication {
             .listen('.track.clues', (e) => this.trackHandler.handleClues(e))
             .listen('.track.found', (e) => this.trackHandler.handleTrackFound(e))
             .listen('.scores.reset', (e) => this.scoreHandler.handleScoresReset(e))
-            .listen('.score.increase', (e) => this.scoreHandler.handleScoreIncrease(e));
+            .listen('.scores.increase', (e) => this.scoreHandler.handleScoreIncrease(e));
     }
 
     setupInputHandler() {

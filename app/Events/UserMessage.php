@@ -5,19 +5,29 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
+use App\Models\User;
+
 class UserMessage implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public string $message;
+    public string $username;
+    public string $uuid;
+    public string $color;
     /**
      * Create a new event instance.
      */
     public function __construct(
-		public string $message, 
-		public string $username,
-		public string $uuid,
-        public string $color
-	) {}
+		string $message, 
+		User $user
+	) {
+        $this->message  = $message;
+        $this->username = $user->username;
+		$this->color	= $user->color;
+		$this->uuid 	= Str::uuid();
+    }
     /**
      * Get the channels the event should broadcast on.
      *

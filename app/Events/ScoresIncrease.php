@@ -36,6 +36,6 @@ class ScoresIncrease implements ShouldBroadcastNow
     }
     public function broadcastAs(): string
     {
-        return 'score.increase';
+        return 'scores.increase';
     }
 }

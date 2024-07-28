@@ -107,7 +107,6 @@ class Track extends Model
 
 			$input = $this->$column;
 
-			\Illuminate\Support\Facades\Log::debug($this->$column);
 			$length = Str::length($input);
 
 			// Ensure at least one character is visible for strings less than 5 characters
