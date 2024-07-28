@@ -31,8 +31,8 @@ class ChatController extends Controller
 		// notify that a user has just joined
 		UserJoined::dispatch($user);
 
-		// go where the user wanted to go initialy
-        return redirect()->intended(route('chat'));
+		// go to the chatroom
+        return redirect(route('chat'));
 
 	}
 
