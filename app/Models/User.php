@@ -36,7 +36,7 @@ class User extends Authenticatable
         });
     }
 
-	public static function resetScores() :void {
+	public static function ScoresReset() :void {
 	
 		User::query()->update(['score'=>0]);
 

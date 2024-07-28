@@ -5,16 +5,21 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-class ResetScores implements ShouldBroadcastNow
+
+class TrackFound implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $username;
+
     /**
      * Create a new event instance.
      */
-    public function __construct()
-    {
-    }
+    public function __construct(
+		public string $username, 
+		public string $found,
+		public float $score,
+		public string $uuid
+	) {}
+
     /**
      * Get the channels the event should broadcast on.
      *
@@ -28,6 +33,6 @@ class ResetScores implements ShouldBroadcastNow
     }
     public function broadcastAs(): string
     {
-        return 'scores.reset';
+        return 'track.found';
     }
 }

@@ -5,24 +5,19 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
-class ScoreIncrease implements ShouldBroadcastNow
+class UserMessage implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-	public $scores;
     /**
      * Create a new event instance.
      */
-    public function __construct()
-    {
-
-		$this->scores = User::pluck('score', 'username')->toArray();
-
-        // sort by score
-        arsort($this->scores);
-
-    }
+    public function __construct(
+		public string $message, 
+		public string $username,
+		public string $uuid,
+        public string $color
+	) {}
     /**
      * Get the channels the event should broadcast on.
      *
@@ -36,6 +31,6 @@ class ScoreIncrease implements ShouldBroadcastNow
     }
     public function broadcastAs(): string
     {
-        return 'score.increase';
+        return 'user.message';
     }
 }

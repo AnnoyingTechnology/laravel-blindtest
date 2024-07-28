@@ -2,15 +2,18 @@
 namespace App\Http\Controllers;
 // events
 use App\Events\{ 
-	MessageSent, 		// rename -> UserMessage
+	// user related
+	UserMessage,
 	UserJoined,
-	NewTrack, 			// rename -> TrackNew
-	FoundTrack, 		// rename -> TrackFound
+	// track related
+	TrackNew,
+	TrackFound,
 	TrackGiveup, 
 	TrackClues,
-	FastForwardTrack, 	// rename -> TrackFastForward
-	ResetScores, 		// rename -> ScoresReset
-	ScoreIncrease, 		// rename -> ScoresIncrease
+	TrackFastForward,
+	// score related
+	ScoresReset,
+	ScoresIncrease, 		// rename -> ScoresIncrease
 };
 // models
 use App\Models\{ User, Track };
@@ -52,7 +55,7 @@ class ChatController extends Controller
 		$uuid 		= Str::uuid();
 
 		// dispatch the message to all watchers
-        MessageSent::dispatch($message, $username, $uuid, $color);
+        UserMessage::dispatch($message, $username, $uuid, $color);
 
 		// if we have a next instructions
 		if(str_starts_with($message, '/next')) {
@@ -68,41 +71,6 @@ class ChatController extends Controller
 					null,
 			};
 		}
-		// // if the message ask for the next track
-		// if(str_starts_with($message, '/next')) {
-
-		// 	$this->next($message);
-
-		// }
-		// // fast forward in the current track by x seconds
-		// elseif($message == '/ff') {
-			
-		// 	$this->fastforward();
-
-		// }
-		// // give a clue
-		// elseif($message == '/clue') {
-
-		// 	$this->clue();
-
-		// }
-		// // give up and displays the track info
-		// elseif($message == '/giveup') {
-
-		// 	$this->giveup();
-
-		// }
-		// // resets the scoreboard
-		// elseif($message == '/reset') {
-		
-		// 	$this->reset();
-
-		// }
-		// elseif(mb_strlen($message) >= 3) {
-		
-		// 	$this->match($message, $username, $uuid);
-
-		// }
 
         return response()->json(['success' => true]);
     }
@@ -143,7 +111,7 @@ class ChatController extends Controller
 		if($matches) {
 
 			// broadcast a found event
-			FoundTrack::dispatch(
+			TrackFound::dispatch(
 				$username,
 				$matches['found'],
 				$matches['score'],
@@ -151,7 +119,7 @@ class ChatController extends Controller
 			);
 
 			// broadcast a score increase event
-			ScoreIncrease::dispatch();
+			ScoresIncrease::dispatch();
 		}
 
 	}
@@ -159,16 +127,16 @@ class ChatController extends Controller
 	private function reset() :void {
 
 		// reset users scores
-		User::resetScores();
+		User::ScoresReset();
 		// broadcast the event
-		ResetScores::dispatch();
+		ScoresReset::dispatch();
 
 	}
 
 	private function fastforward() :void {
 
 		// dispatch a fast forward event
-		FastForwardTrack::dispatch();
+		TrackFastForward::dispatch();
 
 	}
 
@@ -182,8 +150,8 @@ class ChatController extends Controller
 				->values()
 				->all()
 		);
-		// dispatch a newtrack event
-		NewTrack::dispatch($track);
+		// dispatch a TrackNew event
+		TrackNew::dispatch($track);
 
 	}
 

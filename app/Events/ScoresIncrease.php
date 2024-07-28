@@ -5,19 +5,23 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Track;
-class NewTrack implements ShouldBroadcastNow
+use App\Models\User;
+class ScoresIncrease implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $id;
-	public $url;
+
+	public $scores;
     /**
      * Create a new event instance.
      */
-    public function __construct(Track $track)
+    public function __construct()
     {
-        $this->id = $track->id;
-		$this->url = $track->getUrl();
+
+		$this->scores = User::pluck('score', 'username')->toArray();
+
+        // sort by score
+        arsort($this->scores);
+
     }
     /**
      * Get the channels the event should broadcast on.
@@ -32,6 +36,6 @@ class NewTrack implements ShouldBroadcastNow
     }
     public function broadcastAs(): string
     {
-        return 'track.new';
+        return 'score.increase';
     }
 }

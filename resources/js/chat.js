@@ -29,7 +29,7 @@ class ChatApplication {
 
     setupEventListeners() {
         window.Echo.channel('chatroom')
-            .listen('.message.sent', (e) => this.messageHandler.handleNewMessage(e))
+            .listen('.user.message', (e) => this.messageHandler.handleNewMessage(e))
             .listen('.user.joined', (e) => this.userHandler.handleUserJoined(e))
             .listen('.track.new', (e) => this.trackHandler.handleNewTrack(e))
             .listen('.track.fastforward', (e) => this.trackHandler.handleFastForward(e))
