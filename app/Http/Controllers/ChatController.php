@@ -13,7 +13,7 @@ use App\Events\{
 	TrackFastForward,
 	// score related
 	ScoresReset,
-	ScoresIncrease, 		// rename -> ScoresIncrease
+	ScoresIncrease,
 };
 // models
 use App\Models\{ User, Track };
@@ -21,37 +21,43 @@ use App\Models\{ User, Track };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
 
-	public function login(Request $request) {
+	public function login(Request $request, AuthFactory $auth) {
 	
-		$request->validate(['username' => 'required|string']);
+		// validate that a username has been posted
+		$request->validate(['username' => 'required|string|min:2|max:12']); ;
 
-        $username = $request->input('username');
+		// find already existing user or create one
+        $user = User::firstOrCreate(['username' => $request->input('username')]);
 
-        $user = User::firstOrCreate(['username' => $username]);
-
-        Auth::login($user);
+		// authenticate as that user
+        $auth->login($user);
 
 		// notify that a user has just joined
 		UserJoined::dispatch($user);
 
+		// go where the user wanted to go initialy
         return redirect()->intended(route('chat'));
 
 	}
 
 	// we received a new message
-    public function sendMessage(Request $request)
-    {
+    public function sendMessage(
+		Request $request, 
+		Authenticatable $user
+	) {
 
 		// get the contents
-		$request->validate(['message' => 'required|string']);
+		$request->validate(['message' => 'required|string|max:512']);
         $message 	= $request->input('message');
-		$username 	= Auth::user()->username;
-		$color		= Auth::user()->color;
+		$username 	= $user->username;
+		$color		= $user->color;
 		$uuid 		= Str::uuid();
 
 		// dispatch the message to all watchers
