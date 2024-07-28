@@ -11,7 +11,7 @@
         <div id="app" class="container">
             <audio id="audioplayer" src="{{ App\Models\Track::getCurrent()->getUrl(); }}" autoplay></audio>
             <div id="chatroom" class="bg-black card mt-5 border-0 shadow-lg rounded-lg overflow-hidden">
-                <div class="p-4">
+                <div class="p-4 pb-0">
 
                     <h1 class="float-start">
                         <span class="fa fa-music"></span> <strong>Blind</strong>test
@@ -22,7 +22,7 @@
                     </p>
 
                 </div>
-                <div class="p-4">
+                <div class="p-4 pt-0">
 
                     <div 
                     id="messages" 
@@ -38,44 +38,58 @@
                         placeholder="Type the track title, remix, artist, a command or just chat" 
                         autofocus>
 
+                    </div>
 
+                    <div class="btn-group btn-group-sm mt-4 w-100">
+
+                        @foreach(App\Models\Track::getPopularGenres() as $genre)
                             <button 
-                            class="btn btn-outline-light command" 
+                            class="command btn btn-outline-secondary" 
                             type="button" 
-                            data-command="/next" 
-                            data-toggle="tooltip" 
-                            title="pulls a new random track">
-                                /next
+                            style="font-size: 50%" 
+                            data-command="/next {{ $genre }}">
+                                {{ $genre }}
                             </button>
                             
-                            <button 
-                            class="btn btn-outline-light command" 
-                            data-command="/ff" 
-                            title="fast forwards in the track by 30sec">
-                                /ff
-                            </button>
+                        @endforeach
 
-                            <button 
-                            class="btn btn-outline-light command" 
-                            data-command="/clue" 
-                            title="Discloses random letters but lowers scorable points">
-                                /clue
-                            </button>
-                            
-                            <button 
-                            class="btn btn-outline-info command" 
-                            data-command="/giveup" 
-                            title="shows track info and rejects new answers">
-                                /giveup
-                            </button>
-                            
-                            <button 
-                            class="btn btn-outline-warning command" 
-                            data-command="/reset" 
-                            title="Resets the scores of all users">
-                                /reset
-                            </button>
-                
+                        <button 
+                        class="btn btn-outline-light command" 
+                        type="button" 
+                        data-command="/next" 
+                        data-toggle="tooltip" 
+                        title="pulls a new random track">
+                            /next
+                        </button>
+                        
+                        <button 
+                        class="btn btn-outline-light command" 
+                        data-command="/ff" 
+                        title="fast forwards in the track by 30sec">
+                            /ff
+                        </button>
+
+                        <button 
+                        class="btn btn-outline-light command" 
+                        data-command="/clue" 
+                        title="Discloses random letters but lowers scorable points">
+                            /clue
+                        </button>
+                        
+                        <button 
+                        class="btn btn-outline-info command" 
+                        data-command="/giveup" 
+                        title="shows track info and rejects new answers">
+                            /giveup
+                        </button>
+                        
+                        <button 
+                        class="btn btn-outline-warning command" 
+                        data-command="/reset" 
+                        title="Resets the scores of all users">
+                            /reset
+                        </button>
+
                     </div>
 
                 </div>

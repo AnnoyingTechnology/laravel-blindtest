@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Cache;
 
 class Track extends Model
 {
@@ -94,6 +96,51 @@ class Track extends Model
 		return Track::where('is_current',1)->first();
 
 	}
+
+	public static function getPopularGenres(): array {
+
+		return Cache::get('popularGenres', function () {
+			
+			// retrieve all genres
+			$genres = Track::pluck('genre');
+
+			// initialize an empty array to hold genre counts
+			$genreCounts = [];
+	
+			// loop through each genre entry
+			foreach ($genres as $genre) {
+				if(!$genre) { continue; }
+				// Split the genres by "/"
+				$individualGenres = explode(
+					'/', 
+					str_replace(
+						[' ','-'], 
+						'/', 
+						$genre
+					)
+				);
+	
+				// count each individual genre
+				foreach ($individualGenres as $individualGenre) {
+					if(!$individualGenre) { continue; }
+					$individualGenre = mb_strtolower(trim($individualGenre));
+					if (isset($genreCounts[$individualGenre])) {
+						$genreCounts[$individualGenre]++;
+					} else {
+						$genreCounts[$individualGenre] = 1;
+					}
+				}
+			}
+	
+			// sort genres by their count in descending order
+			arsort($genreCounts);
+	
+			// return the sorted genres as an array (top 15 only)
+			return array_slice(array_keys($genreCounts),0,15);
+
+		});
+
+    }
 
 	public function getClues() :array {
 
