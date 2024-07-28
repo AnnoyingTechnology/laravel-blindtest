@@ -24,6 +24,7 @@ class ChatApplication {
     initialize() {
         this.setupEventListeners();
         this.setupInputHandler();
+        this.setupButtonHandlers();
     }
 
     setupEventListeners() {
@@ -48,18 +49,36 @@ class ChatApplication {
         });
     }
 
-    sendMessage() {
-        const messageInput = $('#messageInput');
-        const message = messageInput.val();
-        
-        this.chatService.sendMessage(message)
-            .then(response => {
-                console.log(response);
-                messageInput.val('');
-            })
-            .catch(error => {
-                console.error(error);
+    setupButtonHandlers() {
+        document.querySelectorAll('.command').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const command = event.target.getAttribute('data-command');
+                if (command) {
+                    this.sendMessage(command);
+                }
             });
+        });
+    }
+
+    sendMessage(message = null) {
+        const messageInput = $('#messageInput');
+        const messageToSend = message || messageInput.val();
+        
+        if (messageToSend) {
+            this.chatService.sendMessage(messageToSend)
+                .then(response => {
+                    console.log(response);
+                    if (!message) {
+                        messageInput.val('');
+                    }
+                    else {
+                        $('#messageInput').trigger('focus');
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     }
 }
 

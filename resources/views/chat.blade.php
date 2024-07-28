@@ -9,21 +9,13 @@
     </head>
     <body class="bg-dark">
         <div id="app" class="container">
-            <audio id="audioplayer"></audio>
+            <audio id="audioplayer" src="{{ App\Models\Track::getCurrent()->getUrl(); }}" autoplay></audio>
             <div id="chatroom" class="bg-black card mt-5 border-0 shadow-lg rounded-lg overflow-hidden">
                 <div class="p-4">
 
                     <h1 class="float-start">
                         <span class="fa fa-music"></span> <strong>Blind</strong>test
                     </h1>
-                    
-                    <div class="rounded bg-dark text-light p-3 float-end">
-                        <span class="badge text-bg-success">/next [genre|year]</span> pulls a new random track<br />
-                        <span class="badge text-bg-primary">/ff</span> fast forwards in the track<br />
-                        <span class="badge text-bg-info">/giveup</span> shows track info<br />
-                        <span class="badge text-bg-warning">/reset</span> resets the scores<br />
-                        <span class="badge text-bg-light">/clue</span> discloses random letters<br />
-                    </div>
 
                     <p class="lead float-start pt-3 ps-2">
                         Tune in, guess on
@@ -37,13 +29,53 @@
                     class="overflow-y-scroll overflow-x-hidden text-light fs-5">
                     </div>
                     
-                    <div class="mt-4">
+                    <div class="input-group input-group-lg mt-4">
+                       
                         <input 
                         type="text" 
                         id="messageInput" 
-                        class="w-100 p-2 form-control text-bg-dark form-control-lg" 
-                        placeholder="Type the track title, remixer, artist, a command or just chat" 
+                        class="form-control" 
+                        placeholder="Type the track title, remix, artist, a command or just chat" 
                         autofocus>
+
+
+                            <button 
+                            class="btn btn-outline-light command" 
+                            type="button" 
+                            data-command="/next" 
+                            data-toggle="tooltip" 
+                            title="pulls a new random track">
+                                /next
+                            </button>
+                            
+                            <button 
+                            class="btn btn-outline-light command" 
+                            data-command="/ff" 
+                            title="fast forwards in the track by 30sec">
+                                /ff
+                            </button>
+
+                            <button 
+                            class="btn btn-outline-light command" 
+                            data-command="/clue" 
+                            title="Discloses random letters but lowers scorable points">
+                                /clue
+                            </button>
+                            
+                            <button 
+                            class="btn btn-outline-info command" 
+                            data-command="/giveup" 
+                            title="shows track info and rejects new answers">
+                                /giveup
+                            </button>
+                            
+                            <button 
+                            class="btn btn-outline-warning command" 
+                            data-command="/reset" 
+                            title="Resets the scores of all users">
+                                /reset
+                            </button>
+                
                     </div>
 
                 </div>

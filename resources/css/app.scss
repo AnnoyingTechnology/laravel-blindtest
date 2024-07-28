@@ -38,3 +38,10 @@ h1 {
 	max-height: calc(100vh - 400px);
     overflow-y: auto;
 }
+
+.btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
+}
