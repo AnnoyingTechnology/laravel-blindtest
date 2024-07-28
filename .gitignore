@@ -1,9 +1,8 @@
 node_modules/*
 vendor/*
 storage/app/music/*
-composer.lock
-package-lock.json
 public/build/*
+public/hot
 storage/debugbar
 .env.prod
 .env
