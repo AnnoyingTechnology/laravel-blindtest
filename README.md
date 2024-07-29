@@ -4,10 +4,20 @@
 
 ![Chatroom](blindtest_chatroom.png)
 
+# Features
+
+* Real-time multiplayer music guessing game
+* Websocket-based communication for instant updates
+* Flexible scoring system with partial matching
+* In-game commands for track management and hints
+* Genre and year-based track selection
+
 # Requirements 
 
 * PHP 8.2+
-* a few PHP extensions, nothing exotic
+* Composer
+* Node.js and npm
+* SQLite
 
 # Installation
 
@@ -24,18 +34,21 @@ Sequentially
 
 # Running
 
-In parallel 
+Run these commands in separate terminal windows: 
+
 * `php artisan serve` _runs the local webserver_
 * `php artisan reverb:start` _runs the websocket_
 * `npm run dev` _runs the JS/CSS tools_
 
+Access the application at [http://localhost:8000](http://localhost:8000)
+
 # In-game commands 
 
-* `/next [genre|year] [genre|year]` pulls a new random track
-* `/ff` fast forwards in the track
-* `/giveup` shows track info. No further answers will be accepted for that track.
-* `/reset` resets the scores. All Users will have their score set to zero.
-* `/clue` shows 20% of the letters of artist, name, remix and lessen the scorable points by -20%. Can be called multiple times.
+* `/next [genre|year] [genre|year]` Select a new random track
+* `/ff` Fast forward the current track
+* `/clue` Reveal 20% of the track info (reduces potential points)
+* `/giveup` Reveal track info and end the current round
+* `/reset` Reset all user scores to zero
 
 Note that the genre/year is not saved. 
 
@@ -45,39 +58,19 @@ Consider the following sequence :
 * call `/next`
 * The next track will be totally random
 
-# Scoring
+# Scoring System
 
 Matching is not case sensitive.
 
-Finding an exact match for name, remix (if any) or artist of a track gives 1 point each (maximum score of +3 by track).
+* Exact matches for name, remix, or artist: 1 point each (max 3 points per track)
+* Partial word matches:
+    * Correct word, correct position: 1/3 point
+    * Correct word, wrong position: 1/6 point
 
-Consider the track name `Two Months Off`. The track name has 3 words so each word is worth at most 0.33. 
+_A minimum score of 0.33 is required for an answer to be accepted._
 
-* Each word at the right place gives a third of a point. 
-* Each word at the wrong place gives a third of a point, divided by two.
+# Security Notice
 
-* Answering `two month off` would give 1 point.
-* Answering `three months off` would give 2 out of 3 words at the right place : `0.33+0.33 = 0.66` points rounded to 0.7
-* Answering `off two months` would give 3 out of 3 words, but none at the right place = `0.33/2+0.33/2+0.33/2` = 0.5 points
-
-
-# Security 
-
-**There is no actual authentication.** 
-
-Anyone can choose any username on the login page.
-
-This application **must** not be exposed on the internet, otherwise 
-* add an AuthBasic
-* implement a password authentication on a fork of this project
-
-# Tech
-
-* Uses Websocket for real-time communication
-* Uses perfect or partial artist and track title matches
-
-# Disclaimer
-
-I wrote this in about 7h, being new to Laravel. 
-
-This is first and foremost something to play with a few friends. Don't expect premium code quality (even average code quality tbh).
+**This application has no built-in authentication.** It is intended for local network use only. To secure it for public deployment, consider implementing:
+* HTTP Basic Authentication
+* User registration and login system
