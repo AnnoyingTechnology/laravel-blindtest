@@ -63,9 +63,9 @@ Consider the following sequence :
 Matching is not case sensitive.
 
 * Exact matches for name, remix, or artist: 1 point each (max 3 points per track)
-* Partial word matches:
-    * Correct word, correct position: 1/3 point
-    * Correct word, wrong position: 1/6 point
+* Partial word matches (for a little of `n` words):
+    * Correct word, correct position: `1/n` point
+    * Correct word, wrong position: `1/n/2` point
 
 _A minimum score of 0.33 is required for an answer to be accepted._
 
