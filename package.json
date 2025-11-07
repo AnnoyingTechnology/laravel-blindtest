@@ -8,17 +8,18 @@
     "devDependencies": {
         "autoprefixer": "^10.4.19",
         "laravel-echo": "^1.16.1",
-        "laravel-vite-plugin": "^1.0",
-        "pusher-js": "^8.4.0-rc2",
-        "sass": "1.77.6",
-        "vite": "^5.0"
+        "laravel-vite-plugin": "^2.0",
+        "pusher-js": "^8.4.0",
+        "rollup": "4.53.0",
+        "sass": "^1.80",
+        "vite": "^7.0"
     },
 	"dependencies": {
-        "@fontsource/open-sans": "^5.0",
+        "@fontsource/open-sans": "^5.1",
         "@fortawesome/fontawesome-free": "^6.4",
         "animate.css": "^4.1",
         "bootstrap": "^5.3",
         "jquery": "^3.7",
-        "terser": "^5.18"
+        "terser": "^5.36"
     }
 }

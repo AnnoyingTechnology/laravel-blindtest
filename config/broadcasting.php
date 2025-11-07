@@ -42,7 +42,8 @@ return [
                 'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
             ],
             'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                'verify'  => false,   // TEMP ONLY — remove ASAP
+                'timeout' => 5,
             ],
         ],
 
