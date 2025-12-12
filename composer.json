@@ -50,7 +50,7 @@
             "@php artisan migrate --graceful --ansi"
         ],
         "post-install-cmd": [
-            "@php -r \"if (!file_exists('storage/app/music/just_call-sweet_tooth.mp3')) { copy('demo/just_call-sweet_tooth.mp3', 'storage/app/music/just_call-sweet_tooth.mp3'); echo 'Demo track copied to music directory\\n'; }\""
+            "@php -r \"if (!file_exists('storage/app/music/')) { mkdir('storage/app/music/', 0755, true); echo 'Music directory created\\n'; } if (!file_exists('storage/app/music/just_call-sweet_tooth.mp3')) { copy('demo/just_call-sweet_tooth.mp3', 'storage/app/music/just_call-sweet_tooth.mp3'); echo 'Demo track copied to music directory\\n'; }\""
         ]
     },
     "extra": {
