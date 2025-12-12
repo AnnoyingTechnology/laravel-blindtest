@@ -21,16 +21,20 @@
 
 # Installation
 
-Sequentially 
+Sequentially
 * `composer install` _installs PHP dependencies_
 * `npm install` _installs NodeJS dependencies_
-* Place your music in `storage/app/music` (MP3 files)
+* Place your music in `storage/app/music` (MP3 files) or use the demo track
 * `touch database/database.sqlite` _creates an empty database_
 * `mv .env.example .env` _use the default env file_
 * `php artisan migrate:fresh` _rebuilds the database_
-* `php artisan reverb:install` _regenerates reverb keys and config (Answer Yes)_ 
+* `php artisan reverb:install` _regenerates reverb keys and config (Answer Yes)_
 * `php artisan music:scan` _scans your music, extracts ID3 tags and inserts in the database_
 * `php artisan key:generate` _generates a crypto key_
+
+# Demo Track
+
+When you install this project, a demo track will be automatically copied to the music directory. This allows you to immediately start playing without having to add your own music files.
 
 # Running
 
