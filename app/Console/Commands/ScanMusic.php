@@ -1,12 +1,12 @@
-<?php 
+<?php
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Track;
 use getID3;
+use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class ScanMusic extends Command
 {
@@ -35,28 +35,28 @@ class ScanMusic extends Command
         DB::table('tracks')->truncate();
 
         // Create an instance of getID3
-        $getID3 = new getID3();
+        $getID3 = new getID3;
 
-        // Directory to scan
-        $directory = storage_path('app/music');
+        // Directory to scan (configurable so tests can point elsewhere)
+        $directory = config('filesystems.disks.local.root').'/music';
 
         // Get all .mp3 files in the directory
-        $files = glob($directory . '/*.mp3');
+        $files = glob($directory.'/*.mp3');
 
         foreach ($files as $filePath) {
             $fileInfo = $getID3->analyze($filePath);
             $getID3->CopyTagsToComments($fileInfo);
 
-            $name   = $fileInfo['tags']['id3v2']['title'][0] ?? null;
+            $name = $fileInfo['tags']['id3v2']['title'][0] ?? null;
             $artist = $fileInfo['tags']['id3v2']['artist'][0] ?? null;
-            $year   = $fileInfo['tags']['id3v2']['year'][0] ?? null;
-            $genre  = $fileInfo['tags']['id3v2']['genre'][0] ?? null;
+            $year = $fileInfo['tags']['id3v2']['year'][0] ?? null;
+            $genre = $fileInfo['tags']['id3v2']['genre'][0] ?? null;
 
             // if the name contains a remix
-            if(str_contains($name, '(')) {
+            if (str_contains($name, '(')) {
                 // isolate the name from the fullname
-                list($name, $remix) = explode('(', $name);
-                // trim the name 
+                [$name, $remix] = explode('(', $name);
+                // trim the name
                 $name = trim($name);
                 // trim the remixer
                 $remix = trim($remix, ' )');
@@ -73,42 +73,39 @@ class ScanMusic extends Command
                         'Short',
                         'Mix',
                         'Dub',
-                        'Instrumental'
+                        'Instrumental',
                     ],
-                    '', 
+                    '',
                     $remix
                 );
                 // re-remove trailing spaces
                 $remix = trim($remix) ?? null;
-            }
-            else {
+            } else {
                 $remix = null;
             }
 
-			try {
+            try {
 
-				// Add track data to the database
-				DB::table('tracks')->insert([
-					'file' => basename($filePath),
-					'name' => $name,
-					'remix' => $remix,
-					'artist' => $artist,
-					'year' => $year,
-					'genre' => $genre,
-					'created_at' => now(),
-					'updated_at' => now(),
-				]);
+                // Add track data to the database
+                DB::table('tracks')->insert([
+                    'file' => basename($filePath),
+                    'name' => $name,
+                    'remix' => $remix,
+                    'artist' => $artist,
+                    'year' => $year,
+                    'genre' => $genre,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
-				$this->info("Added: {$filePath}");
+                $this->info("Added: {$filePath}");
 
-			}
-			catch(\Illuminate\Database\QueryException $e) {
-			
-				$this->error("Error: {$filePath}");
+            } catch (QueryException $e) {
 
-			}
+                $this->error("Error: {$filePath}");
 
-            
+            }
+
         }
 
         $this->info('Music scan completed and database updated.');

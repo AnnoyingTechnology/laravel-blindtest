@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Events\UserMessage;
 use App\Models\User;
-use App\Models\Track;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use Illuminate\Support\Facades\Event;
+use Tests\TestCase;
 
 class ChatControllerTest extends TestCase
 {
@@ -42,7 +42,7 @@ class ChatControllerTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->postJson(route('chat.send'), ['message' => 'Hello, world!']);
-        Event::assertDispatched(\App\Events\UserMessage::class);
+        Event::assertDispatched(UserMessage::class);
         $response->assertJson(['success' => true]);
     }
 }
